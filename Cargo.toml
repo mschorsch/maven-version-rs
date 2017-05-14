@@ -2,7 +2,10 @@
 name = "maven-version-rs"
 version = "0.1.0"
 authors = ["Matthias Schorsch"]
-description = "Maven 2/3 Artifact Version Parser."
+description = "Maven 2/3 Artifact Version Parsers."
+documentation = "https://github.com/mschorsch/maven-version-rs"
+homepage = "https://github.com/mschorsch/maven-version-rs"
+repository = "https://github.com/mschorsch/maven-version-rs"
 keywords = ["maven", "java", "artifact"]
 license = "MIT"
 
