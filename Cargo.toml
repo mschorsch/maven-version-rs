@@ -1,0 +1,12 @@
+[package]
+name = "maven-version-rs"
+version = "0.1.0"
+authors = ["Matthias Schorsch"]
+description = "Maven 2/3 Artifact Version Parser."
+keywords = ["maven", "java", "artifact"]
+license = "MIT"
+
+[lib]
+name = "maven_version"
+
+[dependencies]
