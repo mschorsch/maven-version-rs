@@ -14,7 +14,7 @@ use std::cmp;
 
 use ::ArtifactVersion;
 
-const RELEASE_VERSION_INDEX: &'static str = "5"; // QUALIFIERS index of ""
+const RELEASE_VERSION_INDEX: &str = "5"; // QUALIFIERS index of ""
 
 // ---------------------------------------
 // Maven3ArtifactVersion
@@ -275,7 +275,7 @@ fn parse_items(version: &str) -> Vec<Item> {
             if index == start_index {
                 items.push(Item::Integer(0));
             } else {
-                let substring: String = chars[start_index..index].into_iter().collect();
+                let substring: String = chars[start_index..index].iter().collect();
                 items.push(parse_item(is_digit, &substring));
             }
             start_index = index + 1;
@@ -284,16 +284,16 @@ fn parse_items(version: &str) -> Vec<Item> {
             if index == start_index {
                 items.push(Item::Integer(0));
             } else {
-                let substring: String = chars[start_index..index].into_iter().collect();
+                let substring: String = chars[start_index..index].iter().collect();
                 items.push(parse_item(is_digit, &substring));
             }
 
             start_index = index + 1;
             items.push(Item::Minus);
 
-        } else if c.is_digit(10) {
+        } else if c.is_ascii_digit() {
             if !is_digit && index > start_index {
-                let substring: String = chars[start_index..index].into_iter().collect();
+                let substring: String = chars[start_index..index].iter().collect();
                 items.push(to_string_item(substring, true));
 
                 start_index = index;
@@ -303,7 +303,7 @@ fn parse_items(version: &str) -> Vec<Item> {
 
         } else {
             if is_digit && index > start_index {
-                let substring: String = chars[start_index..index].into_iter().collect();
+                let substring: String = chars[start_index..index].iter().collect();
                 items.push(parse_item(true, substring));
 
                 start_index = index;
@@ -314,7 +314,7 @@ fn parse_items(version: &str) -> Vec<Item> {
     }
 
     if chars.len() > start_index {
-        let substring: String = chars[start_index..].into_iter().collect();
+        let substring: String = chars[start_index..].iter().collect();
         items.push(parse_item(is_digit, substring));
     }
 
@@ -338,7 +338,7 @@ fn to_integer_item(value: &str) -> Item {
 fn to_string_item<T: AsRef<str>>(value: T, followed_by_digit: bool) -> Item {
     let mut value: &str = value.as_ref();
     if followed_by_digit && value.chars().count() == 1 {
-        value = match value.chars().nth(0) {
+        value = match value.chars().next() {
             Some('a') => "alpha",
             Some('b') => "beta",
             Some('m') => "milestone",
@@ -359,7 +359,7 @@ fn normalize(items: &mut Vec<Item>) {
 
     for index in (0..items.len()).rev() {
         if items[index].is_minus() {
-            normalize_sublist(items, (index + 1), start_index + 1);
+            normalize_sublist(items, index + 1, start_index + 1);
             start_index = index;
         }      
     }
@@ -394,10 +394,10 @@ mod tests {
     use std::hash::{Hash, Hasher};
     use std::collections::hash_map::DefaultHasher;
 
-    const VERSIONS_QUALIFIER: [&'static str; 22] = ["1-alpha2snapshot", "1-alpha2", "1-alpha-123", "1-beta-2", "1-beta123", "1-m2", "1-m11", "1-rc", "1-cr2",
+    const VERSIONS_QUALIFIER: [&str; 22] = ["1-alpha2snapshot", "1-alpha2", "1-alpha-123", "1-beta-2", "1-beta123", "1-m2", "1-m11", "1-rc", "1-cr2",
             "1-rc123", "1-SNAPSHOT", "1", "1-sp", "1-sp2", "1-sp123", "1-abc", "1-def", "1-pom-1", "1-1-snapshot", "1-1", "1-2", "1-123" ];
 
-    const VERSIONS_NUMBER: [&'static str; 25] = ["2.0", "2-1", "2.0.a", "2.0.0.a", "2.0.2", "2.0.123", "2.1.0", "2.1-a", "2.1b", "2.1-c", "2.1-1", "2.1.0.1",
+    const VERSIONS_NUMBER: [&str; 25] = ["2.0", "2-1", "2.0.a", "2.0.0.a", "2.0.2", "2.0.123", "2.1.0", "2.1-a", "2.1b", "2.1-c", "2.1-1", "2.1.0.1",
             "2.2", "2.123", "11.a2", "11.a11", "11.b2", "11.b11", "11.m2", "11.m11", "11", "11.a", "11b", "11c", "11m"];
 
     fn new_artifact_version(version: &str) -> Maven3ArtifactVersion {

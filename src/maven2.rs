@@ -171,11 +171,11 @@ fn parse_version(maven_version: &str) -> Maven2ArtifactVersion {
     }
 
     Maven2ArtifactVersion {
-        major_version: major_version,
-        minor_version: minor_version,
-        incremental_version: incremental_version,
-        build_number: build_number,
-        qualifier: qualifier,
+        major_version,
+        minor_version,
+        incremental_version,
+        build_number,
+        qualifier,
         unparsed: maven_version,
     }
 }
